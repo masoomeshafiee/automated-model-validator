@@ -27,9 +27,9 @@ preprocess = ColumnTransformer(
 )
 
 logreg_param_grid = {
-    'C': [0.1, 1, 10],
-    'penalty': ['l1', 'l2'],
-    'solver': ['liblinear', 'saga']
+    'classifier_logreg__C': [0.1, 1, 10],
+    'classifier_logreg__penalty': ['l1', 'l2'],
+    'classifier_logreg__solver': ['liblinear', 'saga']
 }
 
 logreg_pipeline = Pipeline([
@@ -39,11 +39,11 @@ logreg_pipeline = Pipeline([
 
 
 rf_param_grid = {
-    'n_estimators': [100, 200],
-    'max_depth': [None, 10, 20],
-    '_min_samples_split': [2, 5],
-    'min_samples_leaf': [1, 2],
-    'class_weight': [None, 'balanced']
+    'classifier_rf__n_estimators': [100, 200],
+    'classifier_rf__max_depth': [None, 10, 20],
+    'classifier_rf__min_samples_split': [2, 5],
+    'classifier_rf__min_samples_leaf': [1, 2],
+    'classifier_rf__class_weight': [None, 'balanced']
 }
 rf_pipeline = Pipeline([
     ('preprocess', preprocess),
@@ -52,10 +52,10 @@ rf_pipeline = Pipeline([
 
 
 gb_param_grid = {
-    'n_estimators': [100, 200],
-    'learning_rate': [0.01, 0.1],
-    'max_depth': [3, 5],
-    'class_weight': [None, 'balanced']
+    'classifier_gb__n_estimators': [100, 200],
+    'classifier_gb__learning_rate': [0.01, 0.1],
+    'classifier_gb__max_depth': [3, 5],
+    'classifier_gb__class_weight': [None, 'balanced']
 }
 gb_pipeline = Pipeline([
     ('preprocess', preprocess),
@@ -64,10 +64,10 @@ gb_pipeline = Pipeline([
 
 
 xgb_param_grid = {
-    'n_estimators': [100, 200],
-    'learning_rate': [0.01, 0.1],
-    'max_depth': [3, 5],
-    'class_weight': [None, 'balanced']
+    'classifier_xgb__max_depth': [3, 5],
+    'classifier_xgb__min_child_weight': [1, 3],
+    'classifier_xgb__gamma': [0.0, 0.2],
+    'classifier_xgb__max_cat_threshold': [32, 64]
 }
 xgb_pipeline = Pipeline([
     ('preprocess', preprocess),

@@ -79,7 +79,6 @@ def evaluate_model(model, x_test, y_test, thresholds: Optional[Dict[str, Dict[st
                 gate = _build_gate_status(metrics[metric_name], threshold_rule, metric_name)
                 metrics[f"{metric_name}_gate"] = gate
 
-
     if path:
         path = Path(path) / "evaluation_report.json"
         path.parent.mkdir(parents=True, exist_ok=True)

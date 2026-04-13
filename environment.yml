@@ -28,3 +28,5 @@ dependencies:
   - pip:
       - xgboost
       - dvc
+      - pyarrow==20.0.0
+      - dvc[gdrive]

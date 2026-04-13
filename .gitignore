@@ -32,5 +32,5 @@ venv/
 # =========================
 # DVC (IMPORTANT)
 # =========================
-/dataset/raw/
-/dataset/processed/
+/data/raw/
+/data/processed/

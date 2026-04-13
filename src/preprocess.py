@@ -21,13 +21,13 @@ categorical_transformer = Pipeline([
 
 preprocess = ColumnTransformer(
     transformers=[
-        ('num', numeric_transformer, selector(dtype_exclude=object)),
-        ('cat', categorical_transformer, selector(dtype_include=object))
+        ('num', numeric_transformer, selector(dtype_include=np.number)),
+        ('cat', categorical_transformer, selector(dtype_include=['object', 'category', 'bool']))
     ]
 )
 
 logreg_param_grid = {
-    'classifier_logreg__C': [0.1, 1, 10],
+    'classifier_logreg__C': [0.1, 1, 10], # Inverse of regularization strength
     'classifier_logreg__penalty': ['l1', 'l2'],
     'classifier_logreg__solver': ['liblinear', 'saga']
 }
@@ -39,11 +39,11 @@ logreg_pipeline = Pipeline([
 
 
 rf_param_grid = {
-    'classifier_rf__n_estimators': [100, 200],
+    'classifier_rf__n_estimators': [100, 200], # Number of trees in the forest
     'classifier_rf__max_depth': [None, 10, 20],
-    'classifier_rf__min_samples_split': [2, 5],
-    'classifier_rf__min_samples_leaf': [1, 2],
-    'classifier_rf__class_weight': [None, 'balanced']
+    'classifier_rf__min_samples_split': [2, 5], # Minimum number of samples required to split an internal node
+    'classifier_rf__min_samples_leaf': [1, 2], # Minimum number of samples required to be at a leaf node
+    'classifier_rf__class_weight': [None, 'balanced'] # Adjust weights inversely proportional to class frequencies
 }
 rf_pipeline = Pipeline([
     ('preprocess', preprocess),
@@ -52,10 +52,10 @@ rf_pipeline = Pipeline([
 
 
 gb_param_grid = {
-    'classifier_gb__n_estimators': [100, 200],
+    'classifier_gb__n_estimators': [100, 200], # Number of boosting stages to perform, meaning how many small trees are added sequentially.
     'classifier_gb__learning_rate': [0.01, 0.1],
     'classifier_gb__max_depth': [3, 5],
-    'classifier_gb__class_weight': [None, 'balanced']
+    #'classifier_gb__class_weight': [None, 'balanced'] does not exist for GradientBoostingClassifier
 }
 gb_pipeline = Pipeline([
     ('preprocess', preprocess),
@@ -64,10 +64,14 @@ gb_pipeline = Pipeline([
 
 
 xgb_param_grid = {
+    'classifier_xgb__n_estimators': [100, 200],
+    'classifier_xgb__learning_rate': [0.01, 0.1],
     'classifier_xgb__max_depth': [3, 5],
-    'classifier_xgb__min_child_weight': [1, 3],
-    'classifier_xgb__gamma': [0.0, 0.2],
-    'classifier_xgb__max_cat_threshold': [32, 64]
+    'classifier_xgb__min_child_weight': [1, 3], # Minimum sum of instance weight (hessian) needed in a child. Higher values prevent overfitting by requiring more samples in a leaf.
+    'classifier_xgb__gamma': [0.0, 0.2], # minimum loss reduction required to make a split
+    'classifier_xgb__subsample': [0.8, 1.0], # fraction of samples to be used for fitting the individual base learners
+    'classifier_xgb__colsample_bytree': [0.8, 1.0] # fraction of features sampled for each tree
+    #'classifier_xgb__max_cat_threshold': [32, 64]
 }
 xgb_pipeline = Pipeline([
     ('preprocess', preprocess),

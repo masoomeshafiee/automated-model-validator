@@ -1,0 +1,30 @@
+
+name: churn_ML_CI_CD
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  # Core
+  - python=3.13
+
+  # Data & ML
+  - numpy
+  - pandas
+  - scikit-learn
+
+  # Visualization (optional but useful)
+  - matplotlib
+  - seaborn
+
+  # Notebook support
+  - ipykernel
+
+  # Utilities
+  - pip
+
+  # Pip-only packages
+  - pip:
+      - xgboost
+      - dvc

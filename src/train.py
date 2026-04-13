@@ -23,9 +23,9 @@ def _fit_with_grid_search(x, y, model_name, model, param_grid, scoring, cv):
     return grid_search
 
 
-def train(x, y, models=MODELS, scoring='f1'):
+def train(x, y, models=MODELS, scoring: str = "f1", cv_folds: int = 5, random_state: int = 42):
 
-    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    cv = StratifiedKFold(n_splits=cv_folds, shuffle=True, random_state=random_state)
     best_model_name = None
     best_search = None
     best_score = -float('inf')
@@ -37,7 +37,7 @@ def train(x, y, models=MODELS, scoring='f1'):
             model_name,
             model,
             param_grid,
-            scoring='f1',
+            scoring=scoring,
             cv=cv,
         )  
         if search.best_score_ > best_score:

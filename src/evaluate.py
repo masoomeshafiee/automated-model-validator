@@ -79,6 +79,11 @@ def evaluate_model(model, x_test, y_test, thresholds: Optional[Dict[str, Dict[st
                 gate = _build_gate_status(metrics[metric_name], threshold_rule, metric_name)
                 metrics[f"{metric_name}_gate"] = gate
 
+    # add a all gates_passed field to indicate if the model passed all gates
+    gates = [value for key, value in metrics.items() if key.endswith("_gate")]
+    if gates:
+        metrics["all_gates_passed"] = all(gate["passed"] for gate in gates)
+
     if path:
         path = Path(path) / "evaluation_report.json"
         path.parent.mkdir(parents=True, exist_ok=True)

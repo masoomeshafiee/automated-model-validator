@@ -1,0 +1,40 @@
+# =========================
+# Paths
+# =========================
+paths:
+  train_data: data/processed/train_data.parquet
+  test_data: data/processed/test_data.parquet
+  artifacts_dir: artifacts
+
+# =========================
+# Data
+# =========================
+data:
+  target_col: Churn
+
+# =========================
+# Training settings
+# =========================
+training:
+  scoring: f1              # metric used in GridSearchCV
+  cv_folds: 5             # StratifiedKFold splits
+  random_state: 42
+
+# =========================
+# Evaluation + CI Gates
+# =========================
+evaluation:
+  thresholds:
+    f1:
+      min: 0.70
+
+    precision:
+      min: 0.70
+
+    recall:
+      min: 0.65
+
+    # Optional AUC gate 
+    auc:
+       baseline: 0.85
+       delta: 0.02

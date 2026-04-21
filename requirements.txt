@@ -1,0 +1,10 @@
+numpy
+pandas
+scikit-learn
+xgboost
+pyarrow==20.0.0
+pyyaml
+joblib
+matplotlib
+seaborn
+ipykernel

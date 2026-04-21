@@ -75,7 +75,7 @@ xgb_param_grid = {
 }
 xgb_pipeline = Pipeline([
     ('preprocess', preprocess),
-    ('classifier_xgb', xgb.XGBClassifier(random_state=42, use_label_encoder=False, eval_metric='logloss'))
+    ('classifier_xgb', xgb.XGBClassifier(random_state=42, eval_metric='logloss'))#, use_label_encoder=False
 ])
 
 MODELS = {

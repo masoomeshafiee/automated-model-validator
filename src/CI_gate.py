@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 from pathlib import Path
 from typing import Any, Dict
+import yaml
 
 
-DEFAULT_CONFIG_PATH = Path("./config.yaml")
+DEFAULT_CONFIG_PATH = Path(__file__).resolve().parents[1] / "config.yaml"
 
 def load_config(path: str | Path = DEFAULT_CONFIG_PATH) -> Dict[str, Any]:
     path = Path(path)
@@ -68,4 +70,12 @@ def main(config_path: str | Path = DEFAULT_CONFIG_PATH) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    parser = argparse.ArgumentParser(description="Evaluate CI gates from evaluation report.")
+    parser.add_argument(
+        "--config",
+        default=str(DEFAULT_CONFIG_PATH),
+        help="Path to YAML config file.",
+    )
+    args = parser.parse_args()
+
+    sys.exit(main(config_path=args.config))

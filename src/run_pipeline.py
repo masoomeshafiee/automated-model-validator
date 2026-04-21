@@ -12,8 +12,9 @@ from train import train
 
 import yaml
 
+from preprocess import MODELS
 
-DEFAULT_CONFIG_PATH = Path("./config.yaml")
+DEFAULT_CONFIG_PATH = Path(__file__).resolve().parents[1] / "config.yaml"
 
 
 # ==============================================================================
@@ -88,6 +89,24 @@ def run_pipeline(config_path: str | Path = DEFAULT_CONFIG_PATH) -> Dict[str, Any
     evaluation_cfg = config.get("evaluation", {})
     thresholds = evaluation_cfg.get("thresholds", None)
 
+    model_name = training_cfg.get("model_name", None)
+    custom_grid = training_cfg.get("hyperparameters", None)
+
+    if model_name:
+        if model_name not in MODELS:
+            raise ValueError(f"Model '{model_name}' not found in predefined MODELS.")
+        
+        base_model, default_grid = MODELS[model_name]
+        classifier_step = [step_name for step_name, _ in base_model.named_steps.items() if step_name.startswith("classifier")][0]
+        if custom_grid:
+            prefixed_grid = {f"{classifier_step}__{param}": values for param, values in custom_grid.items()}
+            selected_grid = prefixed_grid
+        else:
+            selected_grid = default_grid
+        models_to_train = {model_name: (base_model, selected_grid)}
+    else:
+        models_to_train = MODELS
+
     print("Loading processed datasets...")
     train_df = load_dataset(train_data_path)
     test_df = load_dataset(test_data_path)
@@ -96,10 +115,15 @@ def run_pipeline(config_path: str | Path = DEFAULT_CONFIG_PATH) -> Dict[str, Any
     x_train, y_train = split_features_target(train_df, target_col)
     x_test, y_test = split_features_target(test_df, target_col)
 
-    print("Training and selecting best model...")
+    if custom_grid:
+        print(f"Training and selecting best model using custom hyperparameters for {model_name}...")
+    else:   
+        print("Training and selecting best model...")
+
     train_results = train(
         x=x_train,
         y=y_train,
+        models=models_to_train,
         scoring=scoring,
         cv_folds=cv_folds,
         random_state=random_state,

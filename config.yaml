@@ -2,8 +2,8 @@
 # Paths
 # =========================
 paths:
-  train_data: data/processed/train_data.parquet
-  test_data: data/processed/test_data.parquet
+  train_data: data/processed/train_data.csv
+  test_data: data/processed/test_data.csv
   artifacts_dir: artifacts
 
 # =========================
@@ -19,6 +19,12 @@ training:
   scoring: f1              # metric used in GridSearchCV
   cv_folds: 5             # StratifiedKFold splits
   random_state: 42
+
+  model_name: XGBoost
+  hyperparameters:
+    n_estimators: [100]
+    max_depth: [5]
+    learning_rate: [0.1]
 
 # =========================
 # Evaluation + CI Gates

@@ -18,12 +18,12 @@ jobs:
         with:
           python-version: "3.11"
           cache: "pip"
-          cache-dependency-path: ../requirements.txt
+          cache-dependency-path: requirements.txt
       
       - name: install dependencies
         run: |
           pip install --upgrade pip
-          pip install -r ../requirements.txt
+          pip install -r requirements.txt
 
       # - name: run tests
       #   run: |
@@ -50,7 +50,7 @@ jobs:
           python - << 'PY'
           import json
           import sys
-          from pathline import Path
+          from pathlib import Path
           report_path = Path("artifacts/evaluation_report.json")
           if not report_path.exists():
               print("Evaluation report not found.")

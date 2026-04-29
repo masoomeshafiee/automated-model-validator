@@ -67,7 +67,13 @@ jobs:
 
            print(f"AUC gate passed: {auc_gate}")
           PY
-
+          
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-artifacts
+          path: artifacts/
 
 
 # later figure this out when deploy it on aws

@@ -5,6 +5,9 @@ xgboost
 pyarrow==20.0.0
 pyyaml
 joblib
+fastapi
+httpx
+uvicorn
 matplotlib
 seaborn
 ipykernel

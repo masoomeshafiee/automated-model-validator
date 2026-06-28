@@ -26,6 +26,9 @@ dependencies:
 
   # Pip-only packages
   - pip:
+      - fastapi
+      - httpx
+      - uvicorn
       - xgboost
       - dvc
       - pyarrow==20.0.0

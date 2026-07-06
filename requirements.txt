@@ -12,3 +12,4 @@ matplotlib
 seaborn
 ipykernel
 pytest
+ruff

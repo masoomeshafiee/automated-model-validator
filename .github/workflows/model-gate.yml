@@ -1,0 +1,110 @@
+name: Model Gate
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: model-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+
+    outputs:
+      model_changed: ${{ steps.filter.outputs.model }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Detect model-related changes
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            model:
+              - 'src/preprocess.py'
+              - 'src/train.py'
+              - 'src/evaluate.py'
+              - 'config.yaml'
+              - '.github/workflows/model-gate.yml'
+
+  model-gate:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'push' ||
+      (
+        github.event.pull_request.draft == false &&
+        (
+          needs.detect-changes.outputs.model_changed == 'true' ||
+          contains(github.event.pull_request.labels.*.name, 'run-model-gate')
+        )
+      )
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Validate config file
+        run: |
+          python src/validate_config.py --config config.yaml
+
+      - name: Run training and evaluation pipeline
+        run: |
+          python src/run_pipeline.py --config config.yaml
+
+      - name: Run CI gate
+        run: |
+          python src/CI_gate.py --config config.yaml
+
+      - name: Print summaries
+        if: always()
+        run: |
+          echo "=== Training Summary ==="
+          test -f artifacts/training_summary.json && cat artifacts/training_summary.json || true
+          echo "=== Evaluation Report ==="
+          test -f artifacts/evaluation_report.json && cat artifacts/evaluation_report.json || true
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-artifacts
+          path: artifacts/
+          retention-days: 30
+
+  model-gate-status:
+    runs-on: ubuntu-latest
+    needs: [detect-changes, model-gate]
+    if: always()
+
+    steps:
+      - name: Report model gate status
+        run: |
+          echo "Model-related files changed: ${{ needs.detect-changes.outputs.model_changed }}"
+          echo "Model gate result: ${{ needs.model-gate.result }}"

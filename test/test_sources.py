@@ -11,7 +11,7 @@ import numpy as np
 from CI_gate import check_ci_gate, collect_gate_failures, load_config, load_evaluation_report, main as ci_gate_main
 from evaluate import evaluate_model
 import run_pipeline
-from run_pipeline import build_training_summary, load_dataset, load_config as load_pipeline_config, split_features_target
+from run_pipeline import build_training_summary, load_dataset, split_features_target
 from train import train
 
 #When mimicking a behavior of an objects, it is better to create a mock class that has the same interface as the original object, rather than just a simple function. 

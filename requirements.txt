@@ -12,4 +12,5 @@ matplotlib
 seaborn
 ipykernel
 pytest
+pytest-cov
 ruff

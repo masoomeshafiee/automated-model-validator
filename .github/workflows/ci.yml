@@ -52,7 +52,7 @@ jobs:
           
       - name: run code tests
         run: |
-           pytest -v --cov=src tests/
+           pytest -v --cov=src test
 
 
 

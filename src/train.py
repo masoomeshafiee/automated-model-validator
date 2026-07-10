@@ -1,5 +1,4 @@
-from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.metrics import make_scorer, f1_score, accuracy_score, precision_score, recall_score, classification_report, confusion_matrix
+#from sklearn.metrics import make_scorer, f1_score, accuracy_score, precision_score, recall_score, classification_report, confusion_matrix
 from sklearn.model_selection import  GridSearchCV, StratifiedKFold
 
 from preprocess import MODELS

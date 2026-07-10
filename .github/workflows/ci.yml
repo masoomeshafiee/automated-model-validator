@@ -35,7 +35,7 @@ jobs:
       
       - name: run linting
         run: |
-          ruff check src tests/
+          ruff check src test
 
       - name: validate config file
         run: |
